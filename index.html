@@ -4,41 +4,42 @@
         <script src="donut_game.js"></script>
     </head>
     <body>
-        <header>
-            <div class="intro">
-                <h1>Taskmaster doughnut task</h1>
-                <p>This game is based on Taskmaster Series 3 Episode 5.</p>
-                <p>
-                    You have a stick, and some doughnuts (one doughnut for every player in the game).
-                    Each round, you decide how many doughnuts to place on your stick. All other players do the same.
-                    Once everyone has decided, the choices are revealed, and the winner is the player who has selected the
-                    smallest <i>unique</i> number of doughnuts to place on their stick. If no one's selection is unique,
-                    then there is no winner, and we repeat the round until a winner is found.
-                </p>
-                <p>
-                    Here you can play the game against multiple AI players. The different AI players are named according to the
-                    different strategies that they are following. If you can start to understand how the different players are playing,
-                    then it is possible to exploit them and gain an advantage.
-                </p>
-                <p>
-                    You are free to change the mix of AI players in the game using the dropdown boxes below. Some combinations are easier to beat
-                    than others. If you only put Nash players in the game, then it will be impossible for you to gain any advantage (although
-                    they will also have no advantage over you whatever moves you make, so that there is an equal chance of any player coming out on top).
-                    But if there are any non-Nash players playing, and you can figure out their strategy, then theoretically the game is beatable,
-                    in the sense that there will be a strategy you can follow which gives you a better chance of winning than 1/number of players.
-                </p>
-                <p>
-                    Good luck!
-                </p>
-                <br>
-                <hr>
-            </div>
-        </header>
-        <div class="game">
-            <div class="player_select" id="player_select"></div>
+        <div class="intro">
+            <h1>Taskmaster doughnut task</h1>
+            <p>This game is based on Taskmaster Series 3 Episode 5.</p>
+            <p>
+                You have a stick, and some doughnuts (one doughnut for every player in the game).
+                Each round, you decide how many doughnuts to place on your stick. All other players do the same.
+                Once everyone has decided, the choices are revealed, and the winner is the player who has selected the
+                smallest <i>unique</i> number of doughnuts to place on their stick. If no one's selection is unique,
+                then there is no winner, and we repeat the round until a winner is found.
+            </p>
+            <p>
+                Here you can play the game against multiple AI players. The different AI players are named according to the
+                different strategies that they are following. If you can start to understand how the different players are playing,
+                then it is possible to exploit them and gain an advantage.
+            </p>
+            <p>
+                You are free to change the mix of AI players in the game using the dropdown boxes. Some combinations are easier to beat
+                than others. If you only put Nash players in the game, then it will be impossible for you to gain any advantage (although
+                they will also have no advantage over you whatever moves you make, so that there is an equal chance of any player coming out on top).
+                But if there are any non-Nash players playing, and you can figure out their strategy, then theoretically the game is beatable,
+                in the sense that there will be a strategy you can follow which gives you a better chance of winning than 1/number of players.
+            </p>
+            <p>
+                Good luck!
+            </p>
+            <br>
             <hr>
-            Game ends when someone reaches: <input id="game_limit" type="number" value="20"></input><br><br>
-            <button class="newgame_button" onclick="reset_game();">New game</button><br><br>
+        </div>
+        <div class="game">
+            <div class="game_options">
+                <div class="player_select" id="player_select"></div>
+                <div class="game_limit_select">
+                    Game ends when someone reaches: <input id="game_limit" type="number" value="20"></input><br><br>
+                    <button class="newgame_button" onclick="reset_game();">New game</button><br><br>
+                </div>
+            </div>
             <hr>
             Select your next move by clicking one of the buttons below:
             <div class="move_options">
