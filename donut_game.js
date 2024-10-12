@@ -7,6 +7,7 @@ const available_ai_players = {
 };
 
 let ai_players = [];
+let nash_included = false;
 
 const human_player = 'You';
 
@@ -25,6 +26,7 @@ function read_ai_players() {
     // Read the selected AI players from the user inputs
 
     ai_players = [];
+    nash_included = false;
     for (const ai_player in available_ai_players) {
         let n_players = parseInt(document.getElementById(ai_player + '_select').value);
         if (n_players == 1) {
@@ -35,6 +37,16 @@ function read_ai_players() {
                 ai_players.push(ai_player + ' ' + (i + 1).toString());
             }
         }
+
+        if (n_players > 0 && ai_player == 'Nash') {
+            nash_included = true;
+        }
+    }
+
+    if (ai_players.length + 1 > 7 && nash_included) {
+        ai_players = [];
+        nash_included = false;
+        alert("Can't use Nash players in a game with more than 7 players total");
     }
 }
 
@@ -57,7 +69,12 @@ async function set_defaults() {
     last_winner = null;
     draw = null;
 
-    nash_strategy_probs = await fetch('nash_strategies/nash_' + (ai_players.length + 1).toString() + '.json').then((response) => response.json());
+    if (nash_included) {
+        nash_strategy_probs = await fetch('nash_strategies/nash_' + (ai_players.length + 1).toString() + '.json').then((response) => response.json());
+    }
+    else {
+        nash_strategy_probs = null;
+    }
     sage_tracker = Array(ai_players.length + 1).fill(0);
     karl_tracker = {};
     for (const player of ai_players) {
