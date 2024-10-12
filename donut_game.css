@@ -23,8 +23,12 @@ body {
 
 .game {
     font-weight: bold;
-    padding-top: 50px;
-    width: 1750px;
+    padding-bottom: 50px;
+    width: 1350px;
+    padding-left: 200px;
+    padding-right: 200px;
+    padding-bottom: 2px;
+    padding-top: 10px;
 }
 
 .results {
