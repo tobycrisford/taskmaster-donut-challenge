@@ -118,7 +118,7 @@ function recreate_move_table() {
 }
 
 function create_empty_results_row(row, player_name) {
-    const column_keys = ['last_move', 'last_points', 'total_score'];
+    const column_keys = ['last_move', 'total_score'];
     
     let player_label = document.createElement('td');
     player_label.textContent = player_name;
@@ -171,16 +171,16 @@ function update_results_column(values_obj, col_key, offset) {
 function update_results_table() {
     update_results_column(last_move, 'last_move', 1);
     update_results_column(total_score, 'total_score', 0);
-    let last_points = {};
-    for (const player in total_score) {
-        if (player === last_winner) {
-            last_points[player] = 1;
-        }
-        else {
-            last_points[player] = 0;
-        }
-    }
-    update_results_column(last_points, 'last_points', 0);
+    //let last_points = {};
+    //for (const player in total_score) {
+    //    if (player === last_winner) {
+    //        last_points[player] = 1;
+    //    }
+    //    else {
+    //        last_points[player] = 0;
+    //    }
+   // }
+    //update_results_column(last_points, 'last_points', 0);
 }
 
 function update_display() {
