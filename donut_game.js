@@ -138,6 +138,28 @@ async function reset_game() {
     update_display();
 }
 
+function find_winning_moves(move, max_move) {
+    // Find winning move (if any) plus all moves s.t. if any player had done this move instead of their actual move,
+    // with other player moves fixed, they would have won.
+
+    let move_counts = Array(max_move).fill(0);
+    for (const player in move) {
+        move_counts[move[player]] += 1;
+    }
+
+    let winning_moves = [];
+    for (let i = 0;i < move_counts.length;i++) {
+        if (move_counts[i] == 0) {
+            winning_moves.push(i);
+        }
+        else if (move_counts[i] == 1) {
+            winning_moves.push(i);
+            break;
+        }
+    }
+    return winning_moves;
+}
+
 function select_move_from_dist(move_dist) {
     // Select a move from 0,1,... using given probability distribution
 
@@ -163,10 +185,26 @@ function nash_strategy(max_move) {
     return select_move_from_dist(nash_strategy_probs['probs']);
 }
 
+function dory_strategy(max_move) {
+    let winning_moves = null;
+    if (draw !== null) {
+        let dist = Array(max_move).fill(0.0);
+        winning_moves = find_winning_moves(last_move, max_move);
+        let prob = 1 / winning_moves.length;
+        for (const winning_move of winning_moves) {
+            dist[winning_move] = prob;
+        }
+        return select_move_from_dist(dist);
+    }
+    else {
+        return random_strategy(max_move);
+    }
+}
+
 const ai_strategies = {
     Nash: nash_strategy,
     Randy: random_strategy,
-    Dory: random_strategy,
+    Dory: dory_strategy,
     Sage: random_strategy
 };
 
