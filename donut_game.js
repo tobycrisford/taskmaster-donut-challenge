@@ -241,13 +241,19 @@ function find_winning_moves(move, max_move) {
     }
 
     let winning_moves = [];
+    let empty_switch_allowed = true;
     for (let i = 0;i < move_counts.length;i++) {
         if (move_counts[i] == 0) {
-            winning_moves.push(i);
+            if (empty_switch_allowed) {
+                winning_moves.push(i);
+            }
         }
         else if (move_counts[i] == 1) {
             winning_moves.push(i);
             break;
+        }
+        else if (move_counts[i] == 2) {
+            empty_switch_allowed = false;
         }
     }
     return winning_moves;
@@ -296,6 +302,9 @@ function dory_strategy(max_move, player_name) {
 
     if (draw !== null) {
         let winning_moves = find_winning_moves(last_move, max_move);
+        if (winning_moves.length === 0) {
+            return random_strategy(max_move);
+        }
         let dist = distribution_over_choices(winning_moves, max_move);
         return select_move_from_dist(dist);
     }
