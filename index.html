@@ -1,0 +1,34 @@
+
+<html>
+    <head>
+        <script src="donut_game.js"></script>
+    </head>
+    <body>
+        <header>
+            <div class="intro">
+                <h1>Taskmaster donut task</h1>
+                This game is based on Taskmaster Series 3 Episode 5.
+                <br>
+                <hr>
+            </div>
+        </header>
+        <div class="game">
+            <div class="player_select"></div>
+            <button onclick="reset_game();">New game</button><br><br>
+            <hr>
+            <table>
+                <tr id="move_options"></tr>
+            </table><br><br>
+            <div class="results" id="result_display"></div>
+            <table id="result_table">
+                <tr id="result_header">
+                    <th>Player</th>
+                    <th>Last move</th>
+                    <th>Last round points</th>
+                    <th>Total points</th>
+                </tr>
+            </table>
+            <script>reset_game();</script>
+        </div>
+    </body>
+</html>
