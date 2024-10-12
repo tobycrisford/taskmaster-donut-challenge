@@ -15,6 +15,7 @@ let total_score = {};
 let table_size = 0;
 
 let nash_strategy_probs = null;
+let sage_tracker = null;
 
 async function set_defaults() {
     last_move = {};
@@ -33,6 +34,7 @@ async function set_defaults() {
     draw = null;
 
     nash_strategy_probs = await fetch('nash_strategies/nash_' + (ai_players.length + 1).toString() + '.json').then((response) => response.json());
+    sage_tracker = Array(ai_players.length + 1).fill(0);
 }
 
 function recreate_move_table() {
@@ -201,11 +203,37 @@ function dory_strategy(max_move) {
     }
 }
 
+function sage_strategy(max_move) {
+    let max_count = 0;
+    for (const count of sage_tracker) {
+        if (count > max_count) {
+            max_count = count;
+        }
+    }
+
+    let choices = [];
+    for (let i = 0;i < sage_tracker.length;i++) {
+        if (sage_tracker[i] === max_count) {
+            choices.push(i);
+        }
+    }
+
+    let prob = 1 / choices.length;
+    let dist = Array(max_move).fill(0.0);
+    for (const choice of choices) {
+        dist[choice] = prob;
+    }
+    console.log('Sage choices: ');
+    console.log(choices);
+
+    return select_move_from_dist(dist);
+}
+
 const ai_strategies = {
     Nash: nash_strategy,
     Randy: random_strategy,
     Dory: dory_strategy,
-    Sage: random_strategy
+    Sage: sage_strategy
 };
 
 function update_winner(move) {
@@ -231,6 +259,15 @@ function increment_total_points(player) {
     total_score[player] += 1;
 }
 
+function update_sage_tracker(move, max_move) {
+    // Sage keeps track of winning moves across the entire game
+
+    let winning_moves = find_winning_moves(move, max_move);
+    for (const winning_move of winning_moves) {
+        sage_tracker[winning_move] += 1;
+    }
+}
+
 function next_move(human_move) {
     let move = {};
     move[human_player] = human_move;
@@ -242,6 +279,8 @@ function next_move(human_move) {
     if (!draw) {
         increment_total_points(last_winner);
     }
+    update_sage_tracker(move, ai_players.length + 1);
+
     last_move = move;
 
     update_display();
