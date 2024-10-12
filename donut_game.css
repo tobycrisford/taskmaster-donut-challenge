@@ -69,11 +69,10 @@ td > button {
 
 td {
     font-size: xxx-large;
-    width: 250px;
     text-align: center;
+    padding: 15px;
 }
 
 th {
     font-size: xxx-large;
-    width: 500px;
 }
