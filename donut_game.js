@@ -19,15 +19,16 @@ function set_defaults() {
     total_score = {};
     for (const player of ai_players) {
         last_move[player] = null;
-        total_score[player] = null;
+        total_score[player] = 0;
     }
     if (human_player in last_move || human_player in total_score) {
         throw "AI player can't be called ".concat(human_player);
     }
     last_move[human_player] = null;
-    total_score[human_player] = null;
+    total_score[human_player] = 0;
 
     last_winner = null;
+    draw = null;
 }
 
 function recreate_move_table() {
@@ -133,6 +134,66 @@ function reset_game() {
     update_display();
 }
 
-function next_move(move) {
-    console.log('Trying to do move: ' + move.toString());
+function select_move_from_dist(move_dist) {
+    // Select a move from 0,1,... using given probability distribution
+
+    r = Math.random();
+    let prob_total = 0;
+    for (let i = 0;i < move_dist.length;i++) {
+        prob_total += move_dist[i];
+        if (r < prob_total) {
+            return i;
+        }
+    }
+    throw "Bad distribution";
+}
+
+function placeholder_strategy(max_move) {
+    return select_move_from_dist(Array(max_move).fill(1 / max_move));
+}
+
+const ai_strategies = {
+    Nash: placeholder_strategy,
+    Randy: placeholder_strategy,
+    Dory: placeholder_strategy,
+    Sage: placeholder_strategy
+};
+
+function update_winner(move) {
+    let move_to_players = [];
+    for (let i = 0;i < ai_players.length + 1;i++) {
+        move_to_players.push([]);
+    }
+    for (const player in move) {
+        move_to_players[move[player]].push(player);
+    }
+    for (const players of move_to_players) {
+        if (players.length == 1) {
+            draw = false;
+            last_winner = players[0];
+            return;
+        }
+    }
+    draw = true;
+    last_winner = null;
+}
+
+function increment_total_points(player) {
+    total_score[player] += 1;
+}
+
+function next_move(human_move) {
+    let move = {};
+    move[human_player] = human_move;
+    for (const player of ai_players) {
+        move[player] = ai_strategies[player](ai_players.length + 1);
+    }
+
+    update_winner(move);
+    if (!draw) {
+        increment_total_points(last_winner);
+    }
+    last_move = move;
+
+    update_display();
 }
