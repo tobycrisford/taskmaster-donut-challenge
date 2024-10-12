@@ -2,6 +2,15 @@ import numpy as np
 
 win_check_cache = {}
 
+def count_player_moves(player_moves: list[int], max_move: int) -> list[int]:
+    """Given list of player moves, count how many players have selected each move."""
+
+    move_counter = [0 for _ in range(max_move)]
+    for move in player_moves:
+        move_counter[move] += 1
+
+    return move_counter
+
 def find_winning_moves(player_moves: list[int], max_move: int) -> tuple[list[int]]:
     """Given list of other player's moves, find the win and draw options for an additional player."""
 
@@ -11,9 +20,7 @@ def find_winning_moves(player_moves: list[int], max_move: int) -> tuple[list[int
     if cache_key in win_check_cache:
         return win_check_cache[cache_key]
     
-    move_counter = [0 for _ in range(max_move)]
-    for move in moves:
-        move_counter[move] += 1
+    move_counter = count_player_moves(moves, max_move)
 
     n_ones = 0
     for mc in move_counter:
@@ -36,16 +43,37 @@ def find_winning_moves(player_moves: list[int], max_move: int) -> tuple[list[int
     win_check_cache[cache_key] = winning_moves, draw_moves
     return win_check_cache[cache_key]
 
+def prob_and_derivs(player_moves: list[int], move_probs: np.ndarray) -> tuple[float, np.ndarray]:
+    """Find the probability of the given player moves, along with derivative w.r.t. each move prob."""
+
+    prob = 1.0
+    for move in player_moves:
+        prob *= move_probs[move]
+    
+    move_counter = count_player_moves(player_moves, len(move_probs))
+    derivs = np.zeros(len(move_probs))
+    for i in range(len(move_counter)):
+        if move_counter[i] == 0:
+            continue
+        derivs[i] = (prob / move_probs[i]) * move_counter[i]
+
+    return prob, derivs
+
 def find_win_probs(
     move_probs: np.ndarray,
     n_players_to_move: int,
     win_probs: np.ndarray | None = None,
-    player_moves: list[int] | None = None
-) -> np.ndarray:
-    """Given probability of each move for given number of players, find win probability of each move for an additional player."""
+    win_prob_derivs: np.ndarray | None = None,
+    player_moves: list[int] | None = None,
+) -> tuple[np.ndarray]:
+    """Given probability of each move for given number of players, find win probability of each move for an additional player,
+    along with derivatives of this win probability.
+    """
 
     if win_probs is None:
         win_probs = np.zeros(len(move_probs))
+        assert win_prob_derivs is None
+        win_prob_derivs = np.zeros((len(move_probs), len(move_probs)))
 
     if player_moves is None:
         player_moves = []
@@ -53,19 +81,18 @@ def find_win_probs(
     if n_players_to_move > 0:
         for i in range(len(move_probs)):
             player_moves.append(i)
-            find_win_probs(move_probs, n_players_to_move - 1, win_probs, player_moves)
+            find_win_probs(move_probs, n_players_to_move - 1, win_probs, win_prob_derivs, player_moves)
             player_moves.pop()
 
     elif n_players_to_move == 0:
-        prob = 1.0
-        for move in player_moves:
-            prob *= move_probs[move]
-        
+        prob, derivs = prob_and_derivs(player_moves, move_probs)
         winning_moves, draw_moves = find_winning_moves(player_moves, len(move_probs))
         for move in winning_moves:
             win_probs[move] += prob
+            win_prob_derivs[move, :] += derivs
         for move in draw_moves:
             win_probs[move] += (1/(len(player_moves) + 1)) * prob
+            win_prob_derivs[move, :] += (1/(len(player_moves) + 1)) * derivs
 
     
-    return win_probs
+    return win_probs, win_prob_derivs
