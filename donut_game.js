@@ -254,17 +254,21 @@ function sage_strategy(max_move) {
 }
 
 function karl_strategy(max_move) {
-    // Karl targets the currently winning player
-    // and has a particular dislike of humans in ties.
+    // Karl targets players currently doing well,
+    // and has a particular dislike of the human player.
 
     let max_score = -1;
     let top_player = null;
     for (const player in total_score) {
+        if (player === "Karl") {
+            continue;
+        }
         if (total_score[player] > max_score) {
             max_score = total_score[player];
             top_player = player;
         }
-        else if (total_score[player] === max_score && player === human_player) {
+        else if (total_score[player] * 1.5 > max_score && player === human_player) {
+            max_score = total_score[player] * 1.5;
             top_player = player;
         }
     }
