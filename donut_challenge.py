@@ -1,3 +1,5 @@
+import json
+
 import numpy as np
 
 win_check_cache = {}
@@ -142,3 +144,13 @@ def solve_game(n_players: int, n_moves: int | None = None, tolerance: float = 10
 
     
     return soln
+
+def create_strategy_jsons(up_to_n_players: int):
+    """Create Nash equilibrium strategy json files up to n-player game,
+    assuming moves available equals number of players.
+    """
+
+    for i in range(2, up_to_n_players + 1):
+        soln = solve_game(i)
+        with open(f'nash_{i}.json', 'w') as f:
+            json.dump({'probs': list(soln)}, f)

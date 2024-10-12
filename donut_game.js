@@ -14,7 +14,9 @@ let total_score = {};
 
 let table_size = 0;
 
-function set_defaults() {
+let nash_strategy_probs = null;
+
+async function set_defaults() {
     last_move = {};
     total_score = {};
     for (const player of ai_players) {
@@ -29,6 +31,8 @@ function set_defaults() {
 
     last_winner = null;
     draw = null;
+
+    nash_strategy_probs = await fetch('nash_strategies/nash_' + (ai_players.length + 1).toString() + '.json').then((response) => response.json());
 }
 
 function recreate_move_table() {
@@ -128,9 +132,9 @@ function update_display() {
     update_results_table();
 }
 
-function reset_game() {
+async function reset_game() {
     console.log("Starting new game...");
-    set_defaults();
+    await set_defaults();
     update_display();
 }
 
@@ -148,15 +152,22 @@ function select_move_from_dist(move_dist) {
     throw "Bad distribution";
 }
 
-function placeholder_strategy(max_move) {
+function random_strategy(max_move) {
     return select_move_from_dist(Array(max_move).fill(1 / max_move));
 }
 
+function nash_strategy(max_move) {
+    if (nash_strategy_probs['probs'].length != max_move) {
+        throw 'Nash strategy is broken';
+    }
+    return select_move_from_dist(nash_strategy_probs['probs']);
+}
+
 const ai_strategies = {
-    Nash: placeholder_strategy,
-    Randy: placeholder_strategy,
-    Dory: placeholder_strategy,
-    Sage: placeholder_strategy
+    Nash: nash_strategy,
+    Randy: random_strategy,
+    Dory: random_strategy,
+    Sage: random_strategy
 };
 
 function update_winner(move) {
