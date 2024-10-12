@@ -1,9 +1,12 @@
-const ai_players = [
-    "Nash",
-    "Karl",
-    "Dory",
-    "Sage",
-]
+const available_ai_players = {
+    "Nash": 1,
+    "Karl": 1,
+    "Dory": 1,
+    "Sage": 1,
+    "Randy": 0,
+};
+
+let ai_players = [];
 
 const human_player = 'You';
 
@@ -18,7 +21,27 @@ let nash_strategy_probs = null;
 let sage_tracker = null;
 let karl_tracker = null;
 
+function read_ai_players() {
+    // Read the selected AI players from the user inputs
+
+    ai_players = [];
+    for (const ai_player in available_ai_players) {
+        let n_players = parseInt(document.getElementById(ai_player + '_select').value);
+        if (n_players == 1) {
+            ai_players.push(ai_player);
+        }
+        else if (n_players > 1) {
+            for (let i = 0;i < n_players;i++) {
+                ai_players.push(ai_player + ' ' + (i + 1).toString());
+            }
+        }
+    }
+}
+
 async function set_defaults() {
+
+    read_ai_players();
+
     last_move = {};
     total_score = {};
     for (const player of ai_players) {
@@ -121,9 +144,6 @@ function update_results_table() {
 }
 
 function update_display() {
-    if (table_size != ai_players.length + 1) {
-        recreate_tables();
-    }
 
     if (draw !== null) {
         if (draw) {
@@ -140,9 +160,31 @@ function update_display() {
     update_results_table();
 }
 
+function create_inputs() {
+    let player_select = document.getElementById('player_select');
+    for (const ai_player in available_ai_players) {
+        let select = document.createElement('select');
+        select.setAttribute('id', ai_player+'_select');
+        for (let i = 0;i < 5;i++) {
+            let opt = document.createElement('option');
+            opt.setAttribute('value', i.toString());
+            opt.textContent = i.toString();
+            if (i == available_ai_players[ai_player]) {
+                opt.setAttribute('selected', 'selected');
+            }
+            select.appendChild(opt);
+        }
+        let div = document.createElement('div');
+        div.textContent = 'Number of ' + ai_player + ' players:';
+        div.appendChild(select);
+        player_select.appendChild(div);
+    }
+}
+
 async function reset_game() {
     console.log("Starting new game...");
     await set_defaults();
+    recreate_tables();
     update_display();
 }
 
@@ -183,11 +225,11 @@ function select_move_from_dist(move_dist) {
     throw "Bad distribution";
 }
 
-function random_strategy(max_move) {
+function random_strategy(max_move, player_name) {
     return select_move_from_dist(Array(max_move).fill(1 / max_move));
 }
 
-function nash_strategy(max_move) {
+function nash_strategy(max_move, player_name) {
     if (nash_strategy_probs['probs'].length != max_move) {
         throw 'Nash strategy is broken';
     }
@@ -205,7 +247,7 @@ function distribution_over_choices(choices, max_move) {
     return dist;
 }
 
-function dory_strategy(max_move) {
+function dory_strategy(max_move, player_name) {
     // Dory randomly selects from the 'winning' moves of the last round
     // See find_winning_moves for defn of 'winning'
 
@@ -240,7 +282,7 @@ function find_max_value_indices(arr) {
     return indices;
 }
 
-function sage_strategy(max_move) {
+function sage_strategy(max_move, player_name) {
     // Sage remembers all rounds and goes for the move which has been 'winning' most often
     // See find_winning_moves for defn of 'winning'
 
@@ -253,14 +295,14 @@ function sage_strategy(max_move) {
     return select_move_from_dist(dist);
 }
 
-function karl_strategy(max_move) {
+function karl_strategy(max_move, player_name) {
     // Karl targets players currently doing well,
     // and has a particular dislike of the human player.
 
     let max_score = -1;
     let top_player = null;
     for (const player in total_score) {
-        if (player === "Karl") {
+        if (player === player_name) {
             continue;
         }
         if (total_score[player] > max_score) {
@@ -332,7 +374,7 @@ function next_move(human_move) {
     let move = {};
     move[human_player] = human_move;
     for (const player of ai_players) {
-        move[player] = ai_strategies[player](ai_players.length + 1);
+        move[player] = ai_strategies[player.split(' ')[0]](ai_players.length + 1, player);
     }
 
     update_winner(move);
