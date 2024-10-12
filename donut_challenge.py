@@ -96,3 +96,23 @@ def find_win_probs(
 
     
     return win_probs, win_prob_derivs
+
+
+def solve_game(n_players: int, tolerance: float = 10**(-6)):
+    """Find the Nash equilibrium strategy for n_players playing the donut game with n_players possible moves,
+    using Newton-Raphson.
+    """
+
+    soln = np.random.rand(n_players)
+
+    while True:
+        win_probs, win_prob_derivs = find_win_probs(soln, n_players - 1)
+        diff = (1/n_players) - win_probs
+        if np.all(np.abs(diff) < tolerance):
+            break
+
+        update = np.linalg.solve(win_prob_derivs, diff)
+        soln += update
+        
+        
+    return soln
