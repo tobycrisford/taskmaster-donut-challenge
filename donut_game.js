@@ -216,7 +216,7 @@ function create_inputs() {
             select.appendChild(opt);
         }
         let div = document.createElement('div');
-        div.textContent = 'Number of ' + ai_player + ' players:';
+        div.textContent = 'Number of ' + ai_player + ' players:  ';
         div.appendChild(select);
         player_select.appendChild(div);
     }

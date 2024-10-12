@@ -1,6 +1,6 @@
-
 <html>
     <head>
+        <link rel="stylesheet" href="donut_game.css">
         <script src="donut_game.js"></script>
     </head>
     <body>
@@ -15,21 +15,25 @@
         <div class="game">
             <div class="player_select" id="player_select"></div>
             <hr>
-            Game ends when someone reaches: <input id="game_limit" type="number" value="20"></input><br>
-            <button onclick="reset_game();">New game</button><br><br>
+            Game ends when someone reaches: <input id="game_limit" type="number" value="20"></input><br><br>
+            <button class="newgame_button" onclick="reset_game();">New game</button><br><br>
             <hr>
-            <table>
-                <tr id="move_options"></tr>
-            </table><br><br>
+            <div class="move_options">
+                <table>
+                    <tr id="move_options"></tr>
+                </table>
+            </div>
             <div class="results" id="result_display"></div>
-            <table id="result_table">
-                <tr id="result_header">
-                    <th>Player</th>
-                    <th>Last move</th>
-                    <th>Last round points</th>
-                    <th>Total points</th>
-                </tr>
-            </table>
+            <div class="result_table">
+                <table id="result_table">
+                    <tr id="result_header">
+                        <th>Player</th>
+                        <th>Last move</th>
+                        <th>Last round points</th>
+                        <th>Total points</th>
+                    </tr>
+                </table>
+            </div>
             <script>create_inputs();reset_game();</script>
         </div>
     </body>
