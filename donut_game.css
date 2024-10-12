@@ -48,3 +48,26 @@ body {
     background-color: rgb(252, 188, 188);
     color: black;
 }
+
+td > button {
+    margin-top: 0.7em;
+    padding: 3px 18px 3px 18px;
+    border-radius: 8px;
+    border-style: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: larger;
+    background-color: rgb(252, 188, 188);
+    color: black;   
+}
+
+td {
+    font-size: xxx-large;
+    width: 250px;
+    text-align: center;
+}
+
+th {
+    font-size: xxx-large;
+    width: 500px;
+}

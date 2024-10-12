@@ -108,10 +108,12 @@ function recreate_move_table() {
     let row = document.getElementById('move_options');
     row.textContent = '';
     for (let i = 0;i < ai_players.length + 1;i++) {
-        let move_option = document.createElement('td');
+        let move_option_cell = document.createElement('td');
+        let move_option = document.createElement('button');
         move_option.textContent = (i + 1).toString();
         move_option.setAttribute('onclick', 'next_move(' + i.toString() + ')');
-        row.appendChild(move_option);
+        move_option_cell.appendChild(move_option);
+        row.appendChild(move_option_cell);
     }
 }
 
