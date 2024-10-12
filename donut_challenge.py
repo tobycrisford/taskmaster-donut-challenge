@@ -51,11 +51,21 @@ def prob_and_derivs(player_moves: list[int], move_probs: np.ndarray) -> tuple[fl
         prob *= move_probs[move]
     
     move_counter = count_player_moves(player_moves, len(move_probs))
+    
     derivs = np.zeros(len(move_probs))
     for i in range(len(move_counter)):
         if move_counter[i] == 0:
             continue
-        derivs[i] = (prob / move_probs[i]) * move_counter[i]
+        derivs[i] = 1.0
+        for j in range(len(move_counter)):
+            if j == i:
+                exponent = move_counter[j] - 1
+            else:
+                exponent = move_counter[j]
+            if exponent == 0:
+                continue
+            derivs[i] *= (move_probs[j])**(exponent)
+        derivs[i] *= move_counter[i]
 
     return prob, derivs
 
@@ -98,12 +108,15 @@ def find_win_probs(
     return win_probs, win_prob_derivs
 
 
-def solve_game(n_players: int, tolerance: float = 10**(-6)):
-    """Find the Nash equilibrium strategy for n_players playing the donut game with n_players possible moves,
+def solve_game(n_players: int, n_moves: int | None = None, tolerance: float = 10**(-6)):
+    """Find the Nash equilibrium strategy for n_players playing the donut game with n_moves possible moves (<n_players),
     using Newton-Raphson.
     """
 
-    soln = np.random.rand(n_players)
+    if n_moves is None:
+        n_moves = n_players
+    
+    soln = np.random.rand(n_moves)
 
     while True:
         win_probs, win_prob_derivs = find_win_probs(soln, n_players - 1)
@@ -114,5 +127,18 @@ def solve_game(n_players: int, tolerance: float = 10**(-6)):
         update = np.linalg.solve(win_prob_derivs, diff)
         soln += update
         
+    reduced_moves = n_moves
+    while np.any(soln > 1.0 + tolerance) or np.any(soln < 0.0 - tolerance):
+        print('No solution found, repeating with highest potential move removed.')
+        reduced_moves -= 1
+        candidate_soln = solve_game(n_players, n_moves = reduced_moves, tolerance=tolerance)
+        full_soln = np.concatenate((candidate_soln, np.zeros(n_moves - reduced_moves)))
         
+        # Need to check that can't break equilibrium by selecting one of the removed moves
+        win_probs, _ = find_win_probs(full_soln, n_players - 1)
+        solution_valid = not any(win_prob > (1 / n_players) + tolerance for win_prob in win_probs)
+        if solution_valid:
+            soln = full_soln
+
+    
     return soln
