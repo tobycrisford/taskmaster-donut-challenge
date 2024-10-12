@@ -109,7 +109,7 @@ def find_win_probs(
 
 
 def solve_game(n_players: int, n_moves: int | None = None, tolerance: float = 10**(-6)):
-    """Find the Nash equilibrium strategy for n_players playing the donut game with n_moves possible moves (<n_players),
+    """Find the Nash equilibrium strategy for n_players playing the donut game with n_moves possible moves,
     using Newton-Raphson.
     """
 
