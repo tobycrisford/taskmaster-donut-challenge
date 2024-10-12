@@ -1,6 +1,6 @@
 const ai_players = [
     "Nash",
-    "Randy",
+    "Karl",
     "Dory",
     "Sage",
 ]
@@ -16,6 +16,7 @@ let table_size = 0;
 
 let nash_strategy_probs = null;
 let sage_tracker = null;
+let karl_tracker = null;
 
 async function set_defaults() {
     last_move = {};
@@ -35,6 +36,11 @@ async function set_defaults() {
 
     nash_strategy_probs = await fetch('nash_strategies/nash_' + (ai_players.length + 1).toString() + '.json').then((response) => response.json());
     sage_tracker = Array(ai_players.length + 1).fill(0);
+    karl_tracker = {};
+    for (const player of ai_players) {
+        karl_tracker[player] = Array(ai_players.length + 1).fill(0);
+    }
+    karl_tracker[human_player] = Array(ai_players.length + 1).fill(0);
 }
 
 function recreate_move_table() {
@@ -173,6 +179,7 @@ function select_move_from_dist(move_dist) {
             return i;
         }
     }
+    console.log(prob_total);
     throw "Bad distribution";
 }
 
@@ -187,15 +194,24 @@ function nash_strategy(max_move) {
     return select_move_from_dist(nash_strategy_probs['probs']);
 }
 
+function distribution_over_choices(choices, max_move) {
+    // Return a distribution over the given choices
+
+    let dist = Array(max_move).fill(0.0);
+    let prob = 1 / choices.length;
+    for (const choice of choices) {
+        dist[choice] = prob;
+    }
+    return dist;
+}
+
 function dory_strategy(max_move) {
-    let winning_moves = null;
+    // Dory randomly selects from the 'winning' moves of the last round
+    // See find_winning_moves for defn of 'winning'
+
     if (draw !== null) {
-        let dist = Array(max_move).fill(0.0);
-        winning_moves = find_winning_moves(last_move, max_move);
-        let prob = 1 / winning_moves.length;
-        for (const winning_move of winning_moves) {
-            dist[winning_move] = prob;
-        }
+        let winning_moves = find_winning_moves(last_move, max_move);
+        let dist = distribution_over_choices(winning_moves, max_move);
         return select_move_from_dist(dist);
     }
     else {
@@ -203,27 +219,60 @@ function dory_strategy(max_move) {
     }
 }
 
+function find_max_value_indices(arr) {
+    let max_val = null;
+    for (const val of arr) {
+        if (max_val === null) {
+            max_val = val;
+        }
+        else if (val > max_val) {
+            max_val = val;
+        }
+    }
+
+    let indices = [];
+    for (let i = 0;i < arr.length;i++) {
+        if (arr[i] === max_val) {
+            indices.push(i);
+        }
+    }
+
+    return indices;
+}
+
 function sage_strategy(max_move) {
-    let max_count = 0;
-    for (const count of sage_tracker) {
-        if (count > max_count) {
-            max_count = count;
-        }
-    }
+    // Sage remembers all rounds and goes for the move which has been 'winning' most often
+    // See find_winning_moves for defn of 'winning'
 
-    let choices = [];
-    for (let i = 0;i < sage_tracker.length;i++) {
-        if (sage_tracker[i] === max_count) {
-            choices.push(i);
-        }
-    }
+    let choices = find_max_value_indices(sage_tracker);
+    let dist = distribution_over_choices(choices, max_move);
 
-    let prob = 1 / choices.length;
-    let dist = Array(max_move).fill(0.0);
-    for (const choice of choices) {
-        dist[choice] = prob;
-    }
     console.log('Sage choices: ');
+    console.log(choices);
+
+    return select_move_from_dist(dist);
+}
+
+function karl_strategy(max_move) {
+    // Karl targets the currently winning player
+    // and has a particular dislike of humans in ties.
+
+    let max_score = -1;
+    let top_player = null;
+    for (const player in total_score) {
+        if (total_score[player] > max_score) {
+            max_score = total_score[player];
+            top_player = player;
+        }
+        else if (total_score[player] === max_score && player === human_player) {
+            top_player = player;
+        }
+    }
+
+    let choices = find_max_value_indices(karl_tracker[top_player]);
+    let dist = distribution_over_choices(choices, max_move);
+    
+    console.log('Karl choices: ');
     console.log(choices);
 
     return select_move_from_dist(dist);
@@ -233,7 +282,8 @@ const ai_strategies = {
     Nash: nash_strategy,
     Randy: random_strategy,
     Dory: dory_strategy,
-    Sage: sage_strategy
+    Sage: sage_strategy,
+    Karl: karl_strategy,
 };
 
 function update_winner(move) {
@@ -268,6 +318,12 @@ function update_sage_tracker(move, max_move) {
     }
 }
 
+function update_karl_tracker(move) {
+    for (const player in move) {
+        karl_tracker[player][move[player]] += 1;
+    }
+}
+
 function next_move(human_move) {
     let move = {};
     move[human_player] = human_move;
@@ -280,6 +336,7 @@ function next_move(human_move) {
         increment_total_points(last_winner);
     }
     update_sage_tracker(move, ai_players.length + 1);
+    update_karl_tracker(move);
 
     last_move = move;
 
