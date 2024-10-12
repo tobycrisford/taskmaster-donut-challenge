@@ -16,6 +16,10 @@ let last_winner = null;
 let draw = null;
 let total_score = {};
 
+let game_over = false;
+let game_limit = null;
+let overall_winner = null;
+
 let table_size = 0;
 
 let nash_strategy_probs = null;
@@ -81,6 +85,23 @@ async function set_defaults() {
         karl_tracker[player] = Array(ai_players.length + 1).fill(0);
     }
     karl_tracker[human_player] = Array(ai_players.length + 1).fill(0);
+
+    game_over = false;
+    overall_winner = null;
+    try {
+        game_limit = parseInt(document.getElementById('game_limit').value);
+    }
+    catch (err) {
+        alert('Bad input in game limit field - must be an integer!');
+        end_game();
+    }
+}
+
+
+function end_game(winner) {
+    game_over = true;
+    game_limit = null;
+    overall_winner = winner;
 }
 
 function recreate_move_table() {
@@ -162,7 +183,10 @@ function update_results_table() {
 
 function update_display() {
 
-    if (draw !== null) {
+    if (game_over) {
+        update_result_message('Game has ended - winner is: ' + overall_winner);
+    }
+    else if (draw !== null) {
         if (draw) {
             update_result_message('Draw!');
         }
@@ -388,6 +412,10 @@ function update_karl_tracker(move) {
 }
 
 function next_move(human_move) {
+    if (game_over) {
+        return;
+    }
+
     let move = {};
     move[human_player] = human_move;
     for (const player of ai_players) {
@@ -402,6 +430,13 @@ function next_move(human_move) {
     update_karl_tracker(move);
 
     last_move = move;
+
+    for (const player in total_score) {
+        if (total_score[player] >= game_limit) {
+            end_game(player);
+            break;
+        }
+    }
 
     update_display();
 }
