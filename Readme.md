@@ -12,17 +12,17 @@ The most interesting strategy is the Nash equilibrium strategy, calculated numer
 
 ## What is Nash equilibrium?
 
-In this challenge, we are playing a game where our best move depends on what the other players do, and they make their decision in secret. In games like this, you can't find the optimum strategy with maths alone. That's because the optimum strategy is to accurately predict what the other players are going to do, and respond accordingly, and that is a problem in psychology, not mathematics.
+In this challenge, we are playing a game where our best move depends on what the other players do, and they make their decision in secret. In games like this, you can't find the optimum strategy with maths alone. That's because the optimum strategy is to accurately predict what the other players are going to do, and respond accordingly, and that is a problem of psychology, not mathematics.
 
 However, using Game Theory, you *can* calculate something called the Nash equilibrium strategy. This is a strategy with the following property:
 
 *If all players are following the Nash equilibrium strategy, then no individual player can benefit by deviating from the Nash equilibrium strategy.*
 
-In this sense, the Nash equilibrium strategy represents a kind of stable situation. In an interesting game, the Nash equilibrium strategy will involve selecting from a few options at random, according to particular probabilities. For example, in Rock/Paper/Scissors, the Nash equilibrium strategy is to select between Rock, Paper, or Scissors, with 1/3 probability each. This isn't so interesting, because all moves are equally good. But in more complicated games, like the Taskmaster doughnut challenge, the Nash strategy will have you selecting between the different moves with different probabilities. In the doughnut challenge, we will typically be assigning higher probabilities to the smaller numbers.
+In this sense, the Nash equilibrium strategy represents a kind of stable situation. In an interesting game, the Nash equilibrium strategy will involve selecting from a few options at random, according to particular probabilities. For example, in Rock/Paper/Scissors, the Nash equilibrium strategy is to select between Rock, Paper, or Scissors, with 1/3 probability each. This still isn't so interesting, because all moves are equally good. But in more complicated games, like the Taskmaster doughnut challenge, the Nash strategy will have you selecting between the different moves with different probabilities. In the doughnut challenge, we will typically be assigning higher probabilities to the smaller numbers.
 
 If you had a perfectly rational self-interested player, who knew for certain that all the other players were *also* perfectly rational and self-interested, then you might expect this player to adopt the Nash equilibrium strategy when playing the game. Why is this? Well no other strategy would make sense for them. If you were to propose that a rational self-interested player should instead pursue strategy X, then they should expect that all the *other* players will play X as well, since we are assuming they are all reasoning similarly. But if all the other players are playing X, and X is not a Nash equilibrium strategy, then X is not the best strategy to pick in response, and we have a contradiction.
 
-But it is important to stress that this does not mean a player following the Nash equilibrium strategy will always come out on top against players who are following a different strategy. For example, in Rock/Paper/Scissors, if a player follows the Nash equilibrium strategy of randomly picking between the moves with 1/3 probability each, then their chance of eventual victory (and their opponent's) will always be 50/50. This is true whatever their opponent is doing. They have no advantage over *any* possible opponent.
+But it is important to stress that this does not mean a player following the Nash equilibrium strategy will always come out on top against players who are following a different strategy. For example, in Rock/Paper/Scissors, if a player follows the Nash equilibrium strategy of randomly picking between the moves with 1/3 probability each, then their chance of eventual victory (and their opponent's) will always be 50/50. This is true whatever their opponent is doing. They have no advantage over *any* opponent.
 
 ## Calculating the Nash Equilibrium for the Doughnut Challenge
 
@@ -32,19 +32,19 @@ We are going to consider the doughnut challenge with N players, choosing between
 
 The first thing we need to clarify is how we treat a draw. A draw occurs when there is no unique number of doughnuts (e.g. maybe 2 people select 1 doughnut and 3 people select 2 doughnuts). Some discussions of this game online treat a draw as being as bad as a loss. There is nothing wrong with doing that, but it is then a different game to the one that was played on the show. In the show, when the first round ended in a draw, they simply played another round, and they would have kept on doing that until someone won. This means a draw is not as good as a win, but it is definitely better than a loss. How should we value it?
 
-If a win is worth 1, and a loss is worth 0, then a draw should be worth 1/N. There are three ways of arriving at this conclusion.
+If a win is worth 1, and a loss is worth 0, then a draw should be worth 1/N. We give three ways of arriving at this conclusion.
 
 First, if you imagine each player contributing a stake to a pot, and winning the whole pot if they win, then a draw is like everyone getting their stake returned, which is 1/N as good as a victory (if victory is 1 and a loss is 0).
 
-The second way that gives the same answer, and is more relevant to the format of the show, is to reason as follows. We suppose that the thing we are trying to maximize is our probability of winning the next point. If the game ends in a win for us, then that is worth 1. If the game ends in a loss for us, then that is worth 0. But if the game ends in a draw, then our win probability is still the same as what it was before we played the round. And in the equilibrium situation that we are trying to solve for, that win probability is 1/N, by symmetry.
+The second way that gives the same answer, and is more obviously relevant to the format of the show, is to reason as follows. We suppose that the thing we are trying to maximize is our probability of winning the next point. If the game ends in a win for us, then that is worth 1. If the game ends in a loss for us, then that is worth 0. But if the game ends in a draw, then our win probability is still the same as what it was before we played the round. And in the equilibrium situation that we are trying to solve for, that win probability is 1/N, by symmetry.
 
-The third way, is that this is the only way to value a draw in any variant of this game whose format makes it zero-sum (A zero-sum game is a game where one player's gain always comes at the others', equally large, expense). Our win/loss outcome doesn't look zero-sum if we say a victory is worth 1 and a loss 0, but we can freely add a constant to these values without affecting anything relevant, and by subtracting the right constant we can make it zero-sum: if a win is worth (N-1)/N and a loss is worth -1/N, then a win/loss outcome is worth 0 overall. For the draw outcome to be zero-sum as well, that must be worth zero for each player. Adding the constant back, we find that a draw must be worth (1/N) if a loss is worth 0 and a win is worth 1.
+The third way, is to recognize that this is the only way to value a draw in any variant of this game whose format makes it zero-sum. A zero-sum game is a game where one player's gain always comes at the others', equally large, expense. The name comes from the fact that if you sum the winnings and losses of all the players then you will always get zero overall. Our non-draw outcome doesn't look zero-sum if we say a victory is worth 1 to a player and a loss 0, but we can freely add a constant to these values without affecting anything relevant, and by subtracting the right constant we can make it zero-sum: if a win is worth (N-1)/N and a loss is worth -1/N, then a non-draw outcome is worth 0 overall. For the draw outcome to be zero-sum as well, that must be worth zero for each player. Adding the constant back, we find that a draw must be worth (1/N) if a loss is worth 0 and a win is worth 1.
 
 ### The Nash Equilibrium constraints
 
 The Nash equilibrium strategy corresponds to a set of M probabilities for every possible move. We need to solve for these somehow.
 
-We take the perspective of the Nth player, who knows that the other (N-1) players are all following the Nash equilibrium strategy. We then need it to be true that the Nth player can't benefit from deviating from the Nash equilibrium strategy themselves.
+We take the perspective of the Nth player, who knows that the other (N-1) players are all following the Nash equilibrium strategy. We then need it to be true that the Nth player can't benefit by deviating from the Nash equilibrium strategy themselves.
 
 For this to be true, it must be the case that:
 
@@ -55,7 +55,7 @@ For this to be true, it must be the case that:
 
 To solve for these constraints, we first look for a Nash equilibrium situation where *all* of the M moves are equally good for the Nth player, being worth precisely 1/N. This gives us M equations in M unknowns, which we can solve numerically. If this works, then we have found a Nash equilibrium.
 
-But this might not work. Typically, we might find that we have a solution, but it involves some probabilities being either <0 or >1. In this case, the solution lies outside our allowed parameter space. But this does not mean that there is no equilibrium solution. Instead, it is just a sign that the equilibrium lies on the boundary of our parameter space instead. That is, we are going to find ourselves in a situation where the second bullet point above comes in to play. In Nash equilibrium, not all moves will be equally good for the Nth player. There will be some moves (which already have zero Nash probability attached) that are worse than the rest.
+But this might not work. Typically, we might find that we have a solution, but it involves some probabilities being either <0 or >1. In this case, the solution lies outside our allowed parameter space. But this does not mean that there is no Nash equilibrium. Instead, it is just a sign that the equilibrium lies on the boundary of our parameter space instead. That is, we are going to find ourselves in a situation where the second bullet point above comes in to play. Not all moves will be equally good for the Nth player. There will be some moves (which already have zero Nash probability attached) that are worse than the rest.
 
 To search for equilibrium on the boundary, we guess that it will be the largest move that is less good than the rest, and we try re-solving for equilibrium with (N,M-1) instead of (N,M). If this works, all we have to do is verify that the Mth move really is less valuable than the rest in this strategy, and we have found a valid equilibrium for (N, M) too, where we select the Mth move with probability 0. If it doesn't work, we repeat again, with (N, M-2), and so on, until we find an equilibrium.
 
@@ -63,13 +63,13 @@ The above procedure is implemented in donut_challenge.py, and it has been used t
 
 ## Results
 
-The results for different N, M are fascinating. We review them here.
+The results for different N, M are fascinating.
 
 ### 2 Players
 
-Ok, so the 2-player results aren't so interesting. Regardless of the number of moves M, your best strategy in the 2-player game is just to pick 1 doughnut every time.
+Ok, so the 2-player results aren't so interesting. Regardless of the number of moves M, your best strategy, and the Nash equilibrium strategy, in the 2-player game, is just to pick 1 doughnut every time.
 
-It's easy to see that this is a Nash equilibrium. If the other player is doing this, there is nothing you can do to gain an advantage over them. If you pick 1 doughnut you tie, and if you pick any larger number of doughnuts, you lose.
+It's easy to see that this is a Nash equilibrium. If the other player is doing this, there is nothing you can do to gain an advantage over them. If you pick 1 doughnut you tie, and if you pick any larger number of doughnuts, you lose, so you pick 1 doughnut as well.
 
 ### 3 Players
 
@@ -98,7 +98,7 @@ We find that however large M (number of allowed doughnuts) gets, the probability
 
 The probabilities here are decaying as (1/2)^m.
 
-This is kind of mind-blowing. It means if you have no limit on the number of doughnuts you can put on your stick, then in a 3-player game, you should have some non-zero probability of picking 1,000,000 doughnuts! There is no equilibrium otherwise. In concrete terms, if the other two players were playing the Nash equilibrium strategy for N=3, M=999,999 (i.e. they never put more than 999,999 doughnuts on their stick) then you could gain a (very slight) advantage over them by putting 1,000,000 doughnuts on your stick, but no smaller number would do it.
+This is kind of mind-blowing. It means if you have no limit on the number of doughnuts you can put on your stick, then in a 3-player game, you should have some non-zero probability of picking *any number*. There is some non-zero probability that you should pick 1,000,000 doughnuts! There is no equilibrium otherwise. In concrete terms, if the other two players were playing the Nash equilibrium strategy for N=3, M=999,999 (i.e. they never put more than 999,999 doughnuts on their stick) then you could gain a (very slight) advantage over them by putting 1,000,000 doughnuts (or higher) on your stick, but no smaller number would do it.
 
 ### 4 Players
 
@@ -129,7 +129,7 @@ What about the 5-player game that they used on the show? Here are the results:
 
 You should now pick between all available moves with some probability, but this probability gets quickly smaller as the number of doughnuts gets higher. You should pick 5 doughnuts <1% of the time, but not never.
 
-What if we allow >5 doughnuts? It makes no difference. Those new moves all get probability 0 anyway.
+What if we allow >5 doughnuts? Unlike the 3-player case, it now makes no difference. Those new moves all get probability 0 anyway.
 
 This situation is more in line with what I was expecting to see for all N.
 
