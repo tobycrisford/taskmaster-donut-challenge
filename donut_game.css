@@ -1,78 +1,250 @@
-h1 {
+/* CSS is entirely AI generated (only part of this project that is AI generated) */
+
+/* Import 'Special Elite' for the typewriter look and 'Oswald' for the bold logo feel */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Special+Elite&display=swap');
+
+:root {
+    --tm-red: #9e1b32;       /* The Curtain/Carpet Red */
+    --tm-gold: #cba135;      /* The Trophy Gold */
+    --tm-paper: #f4f1ea;     /* The Task Paper Cream */
+    --tm-ink: #2a2a2a;       /* Typewriter Ink */
+    --tm-wax: #bb0a1e;       /* Wax Seal Red */
+}
+
+/* --- Global Resets --- */
+body {
+    /* The background is the "Red Room" */
+    background-color: var(--tm-red);
+    background-image: linear-gradient(to bottom, #9e1b32, #7a1224); 
+    font-family: 'Special Elite', 'Courier New', monospace; /* The Task Font */
+    color: var(--tm-ink);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* --- The "Task Paper" Containers --- */
+.intro, .game {
+    background-color: var(--tm-paper);
+    max-width: 800px;
+    width: 100%;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-sizing: border-box;
+    
+    /* Paper Effect */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    position: relative;
+    border: 1px solid #dcd9d0;
+}
+
+/* Add a subtle "folded paper" top border */
+.intro::before, .game::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background-color: rgba(0,0,0,0.1);
+}
+
+/* --- Typography --- */
+.intro h1 {
+    font-family: 'Oswald', sans-serif;
+    color: var(--tm-ink);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 3rem;
+    text-align: center;
+    border-bottom: 4px solid var(--tm-gold);
+    padding-bottom: 10px;
+    margin-top: 0;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.1);
+}
+
+.intro p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.intro a {
+    color: var(--tm-wax);
+    font-weight: bold;
+    text-decoration: none;
+    border-bottom: 2px dashed var(--tm-wax);
+}
+
+.intro a:hover {
+    background-color: rgba(187, 10, 30, 0.1);
+}
+
+/* --- Game Options --- */
+.game_options {
+    border: 2px solid var(--tm-ink);
+    padding: 20px;
+    margin-bottom: 25px;
+    background: white; /* Slightly cleaner background for controls */
+}
+
+.player_select div {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+}
+
+/* Styled Inputs */
+select, input[type="number"] {
+    font-family: 'Special Elite', monospace;
+    background: var(--tm-paper);
+    border: 2px solid var(--tm-ink);
+    padding: 5px 10px;
+    font-size: 1rem;
+    color: var(--tm-ink);
+    outline: none;
+}
+
+select:focus, input:focus {
+    border-color: var(--tm-gold);
+    box-shadow: 0 0 5px var(--tm-gold);
+}
+
+/* --- The "Wax Seal" New Game Button --- */
+.newgame_button {
+    background-color: var(--tm-wax);
+    color: #fff;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 50%; /* Perfectly round */
+    width: 120px;
+    height: 120px;
+    cursor: pointer;
+    margin: 20px auto;
+    display: block;
+    
+    /* Wax Seal Effect */
+    box-shadow: 
+        inset 0 0 10px rgba(0,0,0,0.5), /* Inner depth */
+        0 4px 6px rgba(0,0,0,0.3),      /* Drop shadow */
+        0 0 0 4px rgba(187, 10, 30, 0.6); /* Outer messy wax rim */
+    
+    transition: transform 0.1s;
+}
+
+.newgame_button:hover {
+    transform: scale(1.05);
+    background-color: #d00b22;
+}
+
+.newgame_button:active {
+    transform: scale(0.95);
+}
+
+/* --- Separator --- */
+hr {
+    border: 0;
+    border-top: 2px dashed var(--tm-ink);
+    margin: 30px 0;
+    opacity: 0.3;
+}
+
+/* --- Move Options (The "Doughnuts") --- */
+.move_options {
     text-align: center;
 }
 
-table {
-    border-spacing: 30px;
-  }
-
-body {
-    font-size: large;
-    background-color: rgb(235, 126, 126);
-    font-family: system-ui,-apple-system,"Segoe UI","Roboto","Ubuntu","Cantarell","Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
-    display: flex;
+.move_options table {
+    margin: 0 auto;
 }
 
-body > div {
-    flex: 50%;
-}
-
-.intro {
-    padding: 100px;
-}
-
-.game {
-    padding: 100px;
+.move_options button {
+    width: 70px;
+    height: 70px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 3px solid var(--tm-ink);
+    background-color: var(--tm-gold); /* Gold Doughnuts (The Trophy!) */
+    color: var(--tm-ink);
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5rem;
     font-weight: bold;
+    cursor: pointer;
+    box-shadow: 2px 4px 0px var(--tm-ink); /* Retro hard shadow */
+    transition: all 0.1s;
 }
 
-.game_options {
-    display: flex;
+.move_options button:hover {
+    background-color: #eec85c;
+    transform: translateY(-2px);
+    box-shadow: 2px 6px 0px var(--tm-ink);
 }
 
-.game_options > div {
-    flex: 50%;
+.move_options button:active {
+    transform: translateY(2px);
+    box-shadow: 0 0 0 var(--tm-ink);
 }
 
+/* --- Results Section --- */
 .results {
-    font-size: xxx-large;
-    min-height: 60px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: var(--tm-wax);
+    font-weight: bold;
+    min-height: 2rem;
+    margin: 20px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.player_select > div {
+/* --- The Table --- */
+.result_table {
+    width: 100%;
+    border: 2px solid var(--tm-ink);
     padding: 5px;
 }
 
-.newgame_button {
-    margin-top: 0.7em;
-    padding: 3px 18px 3px 18px;
-    border-radius: 8px;
-    border-style: none;
-    text-align: center;
-    font-weight: bold;
-    font-size: larger;
-    background-color: rgb(252, 188, 188);
-    color: black;
+#result_table {
+    width: 100%;
+    border-collapse: collapse;
 }
 
-td > button {
-    margin-top: 0.7em;
-    padding: 3px 18px 3px 18px;
-    border-radius: 8px;
-    border-style: none;
-    text-align: center;
-    font-weight: bold;
-    font-size: larger;
-    background-color: rgb(252, 188, 188);
-    color: black;   
+#result_table th {
+    background-color: var(--tm-ink);
+    color: white;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 10px;
+    border: 1px solid var(--tm-ink);
 }
 
-td {
-    font-size: xxx-large;
+#result_table td {
+    border: 1px solid var(--tm-ink);
+    padding: 10px;
     text-align: center;
-    padding: 15px;
+    font-size: 1.1rem;
 }
 
-th {
-    font-size: xxx-large;
+/* Zebra striping using paper shades */
+#result_table tr:nth-child(even) {
+    background-color: #e9e6df;
+}
+
+/* --- Responsive Tweak --- */
+@media (max-width: 600px) {
+    .intro h1 {
+        font-size: 2rem;
+    }
+    .game_options {
+        flex-direction: column;
+    }
 }
